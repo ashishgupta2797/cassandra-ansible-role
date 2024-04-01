@@ -1,0 +1,75 @@
+
+# cassandra installation code for redhat servers
+
+- name: Update package list and install prerequisites
+  yum:
+    name: "{{ development_tools_package }}"
+    state: present
+
+- name: Install Python 3
+  yum:
+    name: "{{ python3_package }}"
+    state: present
+
+- name: Install pip3
+  package:
+    name: "{{ python3_pip_package }}"
+    state: present
+
+- name: Install cqlsh
+  pip:
+    name: "{{ cqlsh_pip_package }}"
+    executable: "{{ pip_executable }}"
+
+- name: Install Java
+  package:
+    name: "{{ redhat_java_package }}"
+    state: present
+
+- name: Add Cassandra repository
+  yum_repository:
+    name: cassandra
+    description: "Apache Cassandra Repository"
+    baseurl: "{{ redhat_cassandra_repo_url }}"
+    gpgcheck: 1
+    repo_gpgcheck: 1
+    gpgkey: "{{ cassandra_repo_key_url }}"
+    state: present
+
+- name: Download specific Cassandra version
+  yum:
+    name: "cassandra-{{ cassandra_version }}"
+    state: present
+
+- name: Start and enable Cassandra service using systemd
+  systemd:
+    name: cassandra
+    state: started
+    enabled: yes
+
+- name: Add JVM options to cassandra-env.sh
+  blockinfile:
+    path: /etc/cassandra/cassandra-env.sh
+    insertbefore: EOF
+    block: |
+      {% for jvm_opt in cassandra_jvm_opts %}
+      JVM_OPTS="$JVM_OPTS {{ jvm_opt }}"
+      {% endfor %}
+  notify: Restart Cassandra
+
+- meta: flush_handlers
+
+- name: Pause for 20 seconds
+  pause:
+      seconds: 20
+  notify: Restart Cassandra
+
+- name: See Nodetool Status 
+  command: "/usr/bin/nodetool status"
+  register: status
+
+- name: Debug Nodetool status
+  debug:
+    var: status
+
+

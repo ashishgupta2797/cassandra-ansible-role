@@ -1,2 +1,64 @@
----
-# tasks file for cassandra_role
+##--------------- Ubuntu ---------------##
+##--------------- Ubuntu tags for install/uninstall/change_config_file ---------------##
+
+- name: install cassandra ubuntu
+  include: install_cassandra_ubuntu.yml
+  when:
+    - ansible_os_family == 'Debian'
+  tags: 
+    - install_cassandra_ubuntu
+    - never
+
+ ##--------------- Ubuntu tag for cassandra.yaml ---------------##
+
+- name: change config yaml for cluster ubuntu
+  include: change_ubuntu_config.yml
+  when:
+    - ansible_os_family == 'Debian'
+  tags: 
+    - change_ubuntu_config
+    - never
+
+##--------------- Ubuntu tags for uninstall ---------------##
+
+- name: Uninstall cassandra ubuntu
+  include: uninstall_cassandra_ubuntu.yml
+  when:
+    - ansible_os_family == 'Debian'
+  tags: 
+    - uninstall_cassandra_ubuntu
+    - never
+
+
+
+##--------------- Redhat ---------------##    
+##--------------- Redhat tag for install---------------##
+
+- name: install cassandra redhat
+  include: install_cassandra_redhat.yml
+  when:
+    - ansible_os_family == 'RedHat'
+  tags: 
+    - install_cassandra_redhat
+    - never
+
+##--------------- Redhat tag for cassandra.yaml ---------------##
+
+- name: change config yaml for cluster redhat
+  include: change_redhat_config.yml
+  when:
+    - ansible_os_family == 'RedHat'
+  tags: 
+    - change_redhat_config
+    - never
+
+
+##--------------- Redhat tag for uninstall ---------------##
+
+- name: Uninstall cassandra redhat
+  include: uninstall_cassandra_redhat.yml
+  when:
+    - ansible_os_family == 'RedHat'
+  tags: 
+    - uninstall_cassandra_redhat
+    - never

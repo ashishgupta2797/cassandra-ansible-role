@@ -1,0 +1,26 @@
+
+# cassandra uninstallation code for redhat servers
+
+- name: Stop Cassandra service
+  systemd:
+    name: cassandra
+    state: stopped
+    enabled: no 
+
+- name: Remove Cassandra package
+  yum:
+    name: "cassandra"
+    state: absent
+
+- name: Remove Cassandra repository
+  yum_repository:
+    name: cassandra
+    state: absent
+    
+- name: Debug Nodetool status after uninstallation
+  command: "/usr/bin/nodetool status"
+  register: status_after_uninstall
+
+- name: Debug Nodetool status
+  debug:
+    var: status_after_uninstall

@@ -1,2 +1,20 @@
 ---
-# vars file for cassandra_role
+
+# vars for ubuntu
+ubuntu_java_apt_package: openjdk-11-jre
+ubuntu_cassandra_repo_url: "deb https://debian.cassandra.apache.org 41x main"
+
+# vars for redhat
+development_tools_package: "@Development Tools"
+python3_package: python3
+python3_pip_package: python3-pip
+cqlsh_pip_package: cqlsh
+pip_executable: pip3
+redhat_java_package: java-11-openjdk-devel
+redhat_cassandra_repo_url: "https://redhat.cassandra.apache.org/41x/"
+
+
+# vars for cassandra-env.sh
+cassandra_jvm_opts:
+  - "-Dcassandra.ignore_dc=true"
+  - "-Dcassandra.ignore_rack=true"

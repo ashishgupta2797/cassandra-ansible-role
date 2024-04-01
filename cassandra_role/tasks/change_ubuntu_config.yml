@@ -1,0 +1,23 @@
+
+# Replace cassandra yaml file into server
+
+- name: Copy Cassandra configuration template into ubuntu
+  template:
+    src: ubuntu_cassandra.yaml.j2
+    dest: /etc/cassandra/cassandra.yaml
+  notify: Restart Cassandra
+
+- meta: flush_handlers
+
+- name: Pause for 20 seconds
+  pause:
+      seconds: 20
+
+- name: See Nodetool Status
+  command: "nodetool status"
+  register: status
+
+- name: Debug Nodetool status
+  debug:
+    var: status
+

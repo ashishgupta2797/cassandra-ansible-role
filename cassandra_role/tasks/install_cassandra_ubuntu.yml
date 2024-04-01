@@ -1,0 +1,60 @@
+
+# cassandra installation code for ubuntu servers
+
+- name: Update APT cache
+  apt:
+    update_cache: yes
+  
+- name: Install Java
+  apt:
+    name: "{{ ubuntu_java_apt_package }}"
+    state: present
+
+- name: Add Cassandra repository key
+  apt_key:
+    url: "{{ cassandra_repo_key_url }}"
+    state: present
+    
+- name: Add Cassandra repository
+  apt_repository:
+    repo: "{{ ubuntu_cassandra_repo_url }}"
+    state: present
+    
+
+- name: Download specific Cassandra version
+  apt:
+    name: "cassandra={{ cassandra_version }}"
+    state: present
+    update_cache: yes
+
+
+- name: Start and enable Cassandra service
+  systemd:
+    name: cassandra
+    state: started
+    enabled: yes
+    
+- name: Add JVM options to cassandra-env.sh
+  blockinfile:
+    path: /etc/cassandra/cassandra-env.sh
+    insertbefore: EOF
+    block: |
+      {% for jvm_opt in cassandra_jvm_opts %}
+      JVM_OPTS="$JVM_OPTS {{ jvm_opt }}"
+      {% endfor %}
+  notify: Restart Cassandra
+
+- meta: flush_handlers
+
+- name: Pause for 30 seconds
+  pause:
+      seconds: 60
+  
+
+- name: See Nodetool Status
+  command: "nodetool status"
+  register: status
+
+- name: Debug Nodetool status
+  debug:
+    var: status

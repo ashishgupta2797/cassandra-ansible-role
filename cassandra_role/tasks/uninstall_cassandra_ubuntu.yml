@@ -1,0 +1,23 @@
+
+# cassandra uninstallation code for ubuntu servers
+
+- name: Stop Cassandra service
+  systemd:
+    name: cassandra
+    state: stopped
+    enabled: no 
+
+- name: Remove Cassandra package
+  apt:
+    name: "cassandra"
+    state: absent
+
+# - name: Remove Cassandra repository
+#   apt_repository:
+#     repo: "{{ ubuntu_cassandra_repo_url }}"
+#     state: absent
+
+# - name: Remove Cassandra repository key
+#   apt_key:
+#     url: "{{ cassandra_repo_key_url }}"
+#     state: absent
